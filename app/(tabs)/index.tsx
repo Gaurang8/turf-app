@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ImageBackground 
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // For eye icon
+import { Link } from 'expo-router';
 
 export default function SignupScreen({ navigation }) {
   const [fullName, setFullName] = useState('');
@@ -90,7 +91,9 @@ export default function SignupScreen({ navigation }) {
         <View style={styles.loginTextContainer}>
           <Text style={styles.normalText}>Already have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.linkText}>Log In</Text>
+            <Text style={styles.linkText}>
+              <Link href='/auth/login'>Log In</Link>
+            </Text>
           </TouchableOpacity>
         </View>
 
