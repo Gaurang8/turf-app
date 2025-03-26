@@ -1,6 +1,6 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react';
@@ -18,18 +18,26 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
+  const router = useRouter(); 
+
   useEffect(() => {
     // Check if user is logged in when app starts
     const checkLoginStatus = async () => {
+
       try {
         const status = await AsyncStorage.getItem('isLoggedIn');
+      console.log('Checking login status...' , status);
+
         if (status === 'true') {
-          setIsLoggedIn(false);
+          setIsLoggedIn(true);
+          router.push('/');  // Redirect to home page if logged in
         } else {
           setIsLoggedIn(false);
+          router.push('/auth/login'); 
         }
       } catch (error) {
         console.error('Error checking login status', error);
+        router.push('/auth/login');  // Redirect to login if error occurs
       }
     };
 
@@ -44,13 +52,18 @@ export default function RootLayout() {
     return null;
   }
 
+  if (isLoggedIn === null || !loaded) {
+    return null;  // Show splash screen until everything is ready
+  }
+
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DefaultTheme : DefaultTheme}>
       <Stack>
         {/* Check if the user is logged in */}
         {isLoggedIn ? (
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tab)" options={{ headerShown: false }} />
         ) : (
+          // <Stack.Screen name="auth/login" options={{ headerShown: false }} />
           <Stack.Screen name="auth/login" options={{ headerShown: false }} />
         )}
         <Stack.Screen name="+not-found" />

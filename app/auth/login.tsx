@@ -4,6 +4,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // For eye icon
 import { Link, useRouter } from 'expo-router'; // `useRouter` is used for navigation in the new `expo-router`
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function SignupScreen() {
   const [contact, setContact] = useState('');
