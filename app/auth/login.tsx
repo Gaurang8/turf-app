@@ -79,7 +79,7 @@ export default function SignupScreen() {
         <View style={styles.signupTextContainer}>
           <Text style={styles.normalText}>Don't have an account? </Text>
           <Text style={styles.linkText}>
-            <Link href='/register'>Register</Link>
+            <Link href='/'>Register</Link>
           </Text>
         </View>
       </View>
