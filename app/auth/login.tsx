@@ -3,20 +3,37 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ImageBackground
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // For eye icon
+import { Link, useRouter } from 'expo-router'; // `useRouter` is used for navigation in the new `expo-router`
 
-export default function SignupScreen({ navigation }) {
+export default function SignupScreen() {
   const [contact, setContact] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter(); // Using `useRouter` from `expo-router` to navigate
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!contact || !password) {
       Alert.alert('Error', 'All fields are required.');
       return;
     }
-
-    Alert.alert('Success', 'Logged in successfully!');
+  
+    // Default login credentials
+    if (contact === '1111' && password === '1111') {
+      Alert.alert('Success', 'Logged in successfully!');
+      
+      // Store login status in AsyncStorage
+      try {
+        await AsyncStorage.setItem('isLoggedIn', 'true');
+      } catch (error) {
+        console.error('Error saving login status', error);
+      }
+      
+      router.push('/');  // Navigate to the home screen
+    } else {
+      Alert.alert('Error', 'Invalid credentials.');
+    }
   };
+  
 
   return (
     <ImageBackground 
@@ -51,11 +68,7 @@ export default function SignupScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* Forgot Password Link */}
-        <TouchableOpacity 
-          onPress={() => navigation.navigate('ForgotPassword')}
-          style={styles.forgotPasswordContainer}
-        >
+        <TouchableOpacity style={styles.forgotPasswordContainer}>
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
 
@@ -63,12 +76,11 @@ export default function SignupScreen({ navigation }) {
           <Text style={styles.signupButtonText}>Log In</Text>
         </TouchableOpacity>
 
-        {/* Sign Up Link */}
         <View style={styles.signupTextContainer}>
           <Text style={styles.normalText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-            <Text style={styles.linkText}>Sign Up</Text>
-          </TouchableOpacity>
+          <Text style={styles.linkText}>
+            <Link href='/register'>Register</Link>
+          </Text>
         </View>
       </View>
     </ImageBackground>
