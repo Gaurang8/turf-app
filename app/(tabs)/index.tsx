@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons'; // For eye icon
 import { Link } from 'expo-router';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function SignupScreen({ navigation }) {
+export default function SignupScreen({ navigation  }) {
   const [fullName, setFullName] = useState('');
   const [contact, setContact] = useState('');
   const [password, setPassword] = useState('');
