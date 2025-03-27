@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { User } from "../models/user.model.js"; // Ensure the correct import path
 import jwt from "jsonwebtoken";
 
+
 export const register = async (req, res) => {
   try {
     const { name, password, confirmPassword, email, phone } = req.body;
@@ -63,7 +64,7 @@ export const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create the new user
-    await User.create({
+    const newUser = await User.create({
       name,
       email: email || null,
       phone: phone || null,
@@ -71,9 +72,23 @@ export const register = async (req, res) => {
       role: "user",
     });
 
+    // Generate JWT token valid for 30 days
+    const token = jwt.sign(
+      { id: newUser._id, name: newUser.name, role: newUser.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "30d" } // Token now expires in 30 days
+    );
+
     return res.status(201).json({
-      message: "Account created successfully, please log in",
+      message: "Account created successfully, redirecting...",
       success: true,
+      token, // Send token to frontend
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        phone: newUser.phone,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -83,6 +98,7 @@ export const register = async (req, res) => {
     });
   }
 };
+
 
 export const login = async (req, res) => {
   try {
@@ -121,7 +137,7 @@ export const login = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, role: user.role }, // Payload
       process.env.JWT_SECRET, // Secret key (store in .env)
-      { expiresIn: "7d" } // Token expiry
+      { expiresIn: "30d" } // Token expiry
     );
 
     return res.status(200).json({
