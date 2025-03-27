@@ -5,9 +5,10 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react';
 import 'react-native-reanimated';
+import { AuthProvider } from '../context/AuthContext';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // For persistent login state
+// import AsyncStorage from '@react-native-async-storage/async-storage'; // For persistent login state
 
 SplashScreen.preventAutoHideAsync();
 
@@ -57,6 +58,7 @@ export default function RootLayout() {
   }
 
   return (
+    <AuthProvider>
     <ThemeProvider value={colorScheme === 'dark' ? DefaultTheme : DefaultTheme}>
       <Stack>
         {/* Check if the user is logged in */}
@@ -70,5 +72,6 @@ export default function RootLayout() {
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
+    </AuthProvider>
   );
 }

@@ -4,10 +4,12 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // For eye icon
 import { Link, useRouter } from 'expo-router'; // `useRouter` is used for navigation in the new `expo-router`
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSession } from '../../hooks/useSession';
 
 
 export default function SignupScreen() {
+  const { signIn } = useSession();
   const [contact, setContact] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -19,6 +21,13 @@ export default function SignupScreen() {
       return;
     }
   
+
+    let res = await signIn(contact, password)
+
+    router.push('/');  // Navigate to the home screen
+
+    return;
+
     // Default login credentials
     if (contact === '1111' && password === '1111') {
       Alert.alert('Success', 'Logged in successfully!');
@@ -30,10 +39,13 @@ export default function SignupScreen() {
         console.error('Error saving login status', error);
       }
       
-      router.push('/');  // Navigate to the home screen
     } else {
       Alert.alert('Error', 'Invalid credentials.');
     }
+
+
+    // onPress={() => signIn(email, password)}
+
   };
   
 
