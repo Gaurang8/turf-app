@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ImageBackground 
 } from 'react-native';
@@ -6,6 +6,10 @@ import { Ionicons } from '@expo/vector-icons'; // For eye icon
 import { Link, useRouter } from 'expo-router';
 import { useSession } from '@/hooks/useSession';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SplashScreen from 'expo-splash-screen';
+
+
+SplashScreen.preventAutoHideAsync();
 
 export default function SignupScreen({ navigation  } : any) {
   const [fullName, setFullName] = useState('');
@@ -14,8 +18,27 @@ export default function SignupScreen({ navigation  } : any) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { register } = useSession();
+  const { register , session , loading } = useSession();
   const router = useRouter(); // Using `useRouter` from `expo-router` to navigate
+
+
+    const [isMounted, setIsMounted] = useState(false);
+  
+    useEffect(() => {
+      if (!loading) {
+        SplashScreen.hideAsync();
+        setIsMounted(true); // Mark layout as mounted
+      }
+    }, [isMounted , loading , session]);
+  
+  
+  
+    useEffect(() => {
+      if ( isMounted && session) {
+        router.replace("/"); 
+      }
+    }
+    , [session, router , isMounted]);
 
 
   const handleSubmit = async () => {

@@ -6,7 +6,7 @@ import { Link } from 'expo-router';
 import { useSession } from '@/hooks/useSession';
 
 export default function SignupScreen({ navigation  } : any) {
-  const { session } = useSession();
+  const { session , signOut } = useSession();
 
   console.log(session)
 
@@ -18,6 +18,11 @@ export default function SignupScreen({ navigation  } : any) {
     <Text style={{ fontSize: 20, marginTop: 20 }}>
       {session ? `Welcome back, ${session.user}` : 'Please log in'}
     </Text>
+    {/* logout */}
+    
+    <TouchableOpacity onPress={signOut} style={{ marginTop: 20, padding: 10, backgroundColor: 'red' }} >
+      <Text style={{ color: 'white', fontSize: 20 }}>Logout</Text>
+    </TouchableOpacity>
     
    </Text>
   );
