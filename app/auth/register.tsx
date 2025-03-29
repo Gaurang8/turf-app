@@ -1,45 +1,54 @@
 import React, { useState } from 'react';
 import { 
-  View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ImageBackground
+  View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ImageBackground 
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // For eye icon
-import { Link, useRouter } from 'expo-router'; // `useRouter` is used for navigation in the new `expo-router`
+import { Link, useRouter } from 'expo-router';
+import { useSession } from '@/hooks/useSession';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSession } from '../../hooks/useSession';
 
-
-export default function SignupScreen() {
-  const { signIn } = useSession();
+export default function SignupScreen({ navigation  } : any) {
+  const [fullName, setFullName] = useState('');
   const [contact, setContact] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { register } = useSession();
   const router = useRouter(); // Using `useRouter` from `expo-router` to navigate
 
+
   const handleSubmit = async () => {
-    if (!contact || !password) {
+    if (!fullName || !contact || !password || !confirmPassword) {
       Alert.alert('Error', 'All fields are required.');
       return;
     }
-  
 
-    let res = await signIn(contact, password);
-
-    console.log('Login response:', res); // Log the response for debugging
-
-    if (res) {
-      Alert.alert('Success', 'Logged in successfully!');
-
-      router.push('/');  // Navigate to the home screen
-    } else {
-      Alert.alert('Error', 'Invalid credentials.');
-
-      // Optionally, you can reset the password field here
-      setPassword('');
-
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match.');
+      return;
     }
 
+
+    try {
+
+      let res = await register(fullName, contact, password , confirmPassword);
+
+      if (res) {
+        Alert.alert('Success', 'Registered successfully!');
+        router.push('/');  // Navigate to the home screen
+
+      } else {
+        Alert.alert('Error', 'Registration failed. Please try again.'); 
+      }
+
+    } catch (error) {
+      console.error('Registration error:', error);
+      Alert.alert('Error', 'An error occurred. Please try again.');
+    }
+
+    
   };
-  
 
   return (
     <ImageBackground 
@@ -47,10 +56,16 @@ export default function SignupScreen() {
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
+        {/* Logo */}
         <Image source={require('../../assets/images/logo1.png')} style={styles.logo} />
 
-        <Text style={styles.title}>Log In</Text>
+        <Text style={styles.title}>Sign Up</Text>
 
+        {/* Full Name */}
+        <Text style={styles.label}>Full Name</Text>
+        <TextInput style={styles.input} value={fullName} onChangeText={setFullName} placeholder="Enter full name" />
+
+        {/* Email or Phone */}
         <Text style={styles.label}>Email/Phone Number</Text>
         <TextInput
           style={styles.input}
@@ -60,6 +75,7 @@ export default function SignupScreen() {
           keyboardType="email-address"
         />
 
+        {/* Password */}
         <Text style={styles.label}>Password</Text>
         <View style={styles.passwordContainer}>
           <TextInput
@@ -74,20 +90,36 @@ export default function SignupScreen() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.forgotPasswordContainer}>
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.signupButton} onPress={handleSubmit}>
-          <Text style={styles.signupButtonText}>Log In</Text>
-        </TouchableOpacity>
-
-        <View style={styles.signupTextContainer}>
-          <Text style={styles.normalText}>Don't have an account? </Text>
-          <Text style={styles.linkText}>
-            <Link href='/auth/register'>Register</Link>
-          </Text>
+        {/* Confirm Password */}
+        <Text style={styles.label}>Confirm Password</Text>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            placeholder="Re-enter password"
+            secureTextEntry={!showConfirmPassword}
+          />
+          <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+            <Ionicons name={showConfirmPassword ? "eye" : "eye-off"} size={20} color="gray" />
+          </TouchableOpacity>
         </View>
+
+        {/* Sign Up Button */}
+        <TouchableOpacity style={styles.signupButton} onPress={handleSubmit}>
+          <Text style={styles.signupButtonText}>Sign Up</Text>
+        </TouchableOpacity>
+
+        {/* Already have an account? */}
+        <View style={styles.loginTextContainer}>
+          <Text style={styles.normalText}>Already have an account? </Text>
+          <TouchableOpacity >
+            <Text style={styles.linkText}>
+              <Link href='/auth/login'>Log In</Link>
+            </Text>
+          </TouchableOpacity>
+        </View>
+
       </View>
     </ImageBackground>
   );
@@ -147,15 +179,6 @@ const styles = StyleSheet.create({
   passwordInput: {
     flex: 1,
   },
-  forgotPasswordContainer: {
-    alignSelf: 'flex-end', 
-    marginBottom: 5,
-  },
-  forgotPasswordText: {
-    color: '#191970', // Midnight Blue
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
   signupButton: {
     backgroundColor: '#28a745',
     paddingVertical: 12,
@@ -170,7 +193,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  signupTextContainer: {
+  loginTextContainer: {
     flexDirection: 'row',
     marginTop: 15,
   },
@@ -180,7 +203,7 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: 16,
-    color: '#191970', // Midnight Blue
+    color: 'blue',
     fontWeight: 'bold',
   },
 });

@@ -3,75 +3,51 @@ import { useFonts } from 'expo-font';
 import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import { AuthProvider } from '../context/AuthContext';
-
 import { useColorScheme } from '@/hooks/useColorScheme';
-// import AsyncStorage from '@react-native-async-storage/async-storage'; // For persistent login state
+import { useSession } from '@/hooks/useSession';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);  // State to track login status
+function RootLayoutWrapper() {
+  const { session, loading } = useSession();
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  const router = useRouter(); 
+  const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Check if user is logged in when app starts
-    const checkLoginStatus = async () => {
-
-      try {
-        const status = await AsyncStorage.getItem('isLoggedIn');
-      console.log('Checking login status...' , status);
-
-        if (status === 'true') {
-          setIsLoggedIn(true);
-          router.push('/');  // Redirect to home page if logged in
-        } else {
-          setIsLoggedIn(false);
-          router.push('/auth/login'); 
-        }
-      } catch (error) {
-        console.error('Error checking login status', error);
-        router.push('/auth/login');  // Redirect to login if error occurs
-      }
-    };
-
-    checkLoginStatus();
-    
-    if (loaded) {
+    if (!loading) {
       SplashScreen.hideAsync();
+      setIsMounted(true); // Mark layout as mounted
     }
-  }, [loaded]);
+  }, [loading]);
 
-  if (!loaded) {
-    return null;
-  }
+  useEffect(() => {
+    if (isMounted) {
+      if (!session) {
+        router.replace("/auth/login"); // Navigate only after mounting
+      }
+    }
+  }, [isMounted, session, router]);
 
-  if (isLoggedIn === null || !loaded) {
-    return null;  // Show splash screen until everything is ready
+  if (loading || !isMounted) {
+    return null; // Show splash screen until authentication is checked
   }
 
   return (
-    <AuthProvider>
-    <ThemeProvider value={colorScheme === 'dark' ? DefaultTheme : DefaultTheme}>
-      <Stack>
-        {/* Check if the user is logged in */}
-        {isLoggedIn ? (
-          <Stack.Screen name="(tab)" options={{ headerShown: false }} />
-        ) : (
-          // <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-          <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-        )}
-        <Stack.Screen name="+not-found" />
-      </Stack>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack screenOptions={{ headerShown: false }} />
       <StatusBar style="auto" />
     </ThemeProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <RootLayoutWrapper />
     </AuthProvider>
   );
 }
