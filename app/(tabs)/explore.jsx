@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  FlatList,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { ThemedView } from "@/components/ThemedView";
 
 const AdminDashboard = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -42,9 +42,12 @@ const AdminDashboard = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+    
+    <ThemedView style={styles.container}>
       <Text style={styles.header}>🏏 Admin Dashboard</Text>
 
+      {/* Stats Section */}
       <View style={styles.statsContainer}>
         <View style={styles.statCard}>
           <Text style={styles.statTitle}>Total Bookings</Text>
@@ -56,6 +59,7 @@ const AdminDashboard = () => {
         </View>
       </View>
 
+      {/* Date Picker */}
       <TouchableOpacity style={styles.dateButton} onPress={() => setShowPicker(true)}>
         <Text style={styles.dateText}>📅 {selectedDate.toDateString()}</Text>
       </TouchableOpacity>
@@ -64,61 +68,59 @@ const AdminDashboard = () => {
         <DateTimePicker value={selectedDate} mode="date" display="default" onChange={onDateChange} />
       )}
 
+      {/* Booking Requests Section */}
       <Text style={styles.sectionTitle}>📌 Booking Requests</Text>
-      <FlatList
-        data={bookingRequests}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item, index }) => (
-          <View style={styles.card}>
-            <Text style={styles.cardText}>
-              <Text style={styles.bold}>#{index + 1} </Text> {item.slot} | ₹{item.price}
-            </Text>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.acceptButton} onPress={() => acceptBooking(item)}>
-                <Text style={styles.buttonText}>✅ Accept</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.rejectButton} onPress={() => rejectBooking(item)}>
-                <Text style={styles.buttonText}>❌ Reject</Text>
-              </TouchableOpacity>
-            </View>
+      {bookingRequests.map((item, index) => (
+        <View key={item.id} style={styles.card}>
+          <Text style={styles.cardText}>
+            <Text style={styles.bold}>#{index + 1} </Text> {item.slot} | ₹{item.price}
+          </Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.acceptButton} onPress={() => acceptBooking(item)}>
+              <Text style={styles.buttonText}>✅ Accept</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.rejectButton} onPress={() => rejectBooking(item)}>
+              <Text style={styles.buttonText}>❌ Reject</Text>
+            </TouchableOpacity>
           </View>
-        )}
-      />
+        </View>
+      ))}
 
+      {/* Accepted Bookings Section */}
       <Text style={styles.sectionTitle}>✅ Accepted Bookings</Text>
-      <FlatList
-        data={acceptedBookings}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item, index }) => (
-          <View style={[styles.card, styles.acceptedCard]}>
-            <Text style={styles.cardText}>
-              <Text style={styles.bold}>#{index + 1} </Text> {item.slot} | ₹{item.price}
-            </Text>
-          </View>
-        )}
-      />
+      {acceptedBookings.map((item, index) => (
+        <View key={item.id} style={[styles.card, styles.acceptedCard]}>
+          <Text style={styles.cardText}>
+            <Text style={styles.bold}>#{index + 1} </Text> {item.slot} | ₹{item.price}
+          </Text>
+        </View>
+      ))}
 
+      {/* Rejected Bookings Section */}
       <Text style={styles.sectionTitle}>❌ Rejected Bookings</Text>
-      <FlatList
-        data={rejectedBookings}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item, index }) => (
-          <View style={[styles.card, styles.rejectedCard]}>
-            <Text style={styles.cardText}>
-              <Text style={styles.bold}>#{index + 1} </Text> {item.slot} | ₹{item.price}
-            </Text>
-          </View>
-        )}
-      />
+      {rejectedBookings.map((item, index) => (
+        <View key={item.id} style={[styles.card, styles.rejectedCard]}>
+          <Text style={styles.cardText}>
+            <Text style={styles.bold}>#{index + 1} </Text> {item.slot} | ₹{item.price}
+          </Text>
+        </View>
+      ))}
+    </ThemedView>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollContainer:{
+    flexGrow: 1, 
+
+  },
   container: {
     flex: 1,
     padding: 20,
     backgroundColor: "#f9f9f9",
+    paddingBottom: 100,
+    flexGrow: 1, 
   },
   header: {
     fontSize: 26,
@@ -194,6 +196,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
+  },
+  acceptButton: {
+    backgroundColor: "#28a745",
+    padding: 8,
+    borderRadius: 5,
+  },
+  rejectButton: {
+    backgroundColor: "#dc3545",
+    padding: 8,
+    borderRadius: 5,
   },
   buttonText: {
     color: "#fff",

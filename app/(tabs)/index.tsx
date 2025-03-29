@@ -8,7 +8,7 @@ import { useSession } from '@/hooks/useSession';
 export default function SignupScreen({ navigation  } : any) {
   const { session , signOut } = useSession();
 
-  console.log(session)
+  console.log("session " ,session)
 
   return (
    <Text>
