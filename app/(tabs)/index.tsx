@@ -11,20 +11,11 @@ export default function SignupScreen({ navigation  } : any) {
   console.log("session " ,session)
 
   return (
-   <Text>
-    <Link href="/auth/login" style={{ color: 'blue', fontSize: 20, fontWeight: 'bold' }}>
-      Go to Login
-    </Link>
-    <Text style={{ fontSize: 20, marginTop: 20 }}>
+   
+    <Text style={{ fontSize: 20, marginTop: 20 , paddingInline: 20 }}>
       {session ? `Welcome back, ${session.user}` : 'Please log in'}
     </Text>
-    {/* logout */}
     
-    <TouchableOpacity onPress={signOut} style={{ marginTop: 20, padding: 10, backgroundColor: 'red' }} >
-      <Text style={{ color: 'white', fontSize: 20 }}>Logout</Text>
-    </TouchableOpacity>
-    
-   </Text>
   );
 }
 

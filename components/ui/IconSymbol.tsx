@@ -15,6 +15,7 @@ const MAPPING = {
   'chevron.right': 'chevron-right',
   'gearshape.fill': 'settings',
   'person.fill': 'person',
+  'admin-panel-settings.fill': 'admin-panel-settings',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
