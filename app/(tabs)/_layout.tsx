@@ -1,63 +1,188 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
-
+import { router, Tabs } from 'expo-router';
+import React, { useState } from 'react';
+import { View, StyleSheet, Image, TouchableOpacity, Platform } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { Drawer, Icon, useTheme } from 'react-native-paper';
+import { LinearGradient } from 'expo-linear-gradient';
+import BlurTabBarBackground from '@/components/ui/TabBarBackground.ios';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  
-  // Get active and inactive tint colors based on the color scheme
-  const activeTintColor = Colors[colorScheme ?? 'light'].tint;  // This would typically be white for light mode and black for dark mode
-  const inactiveTintColor = Colors[colorScheme ?? 'light'].text;  // Use a neutral color (e.g., gray) for inactive tabs
+  const theme = useTheme();
+
+  const activeTintColor = Colors[colorScheme ?? 'light'].tint;
+  const inactiveTintColor = Colors[colorScheme ?? 'light'].text;
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: activeTintColor,  // active color (for selected tab)
-        tabBarInactiveTintColor: inactiveTintColor,  // inactive color (for unselected tabs)
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
-          ),
+    <View style={styles.container}>
+      {/* Custom Sticky Header */}
+      <LinearGradient
+        colors={['rgba(255,255,255,0.9)', 'rgba(255,255,255,0.9)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={styles.header}
+      >
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('@/assets/images/logo1.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
+
+        <TouchableOpacity  style={styles.menuButton}
+          onPress={() => {
+            router.push('/profile');
+          }}
+        >
+          <Icon
+            source="account"
+            color={"#000"}
+            size={28}
+          />
+        </TouchableOpacity>
+      </LinearGradient>
+
+
+
+      {/* Tab Navigation */}
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: activeTintColor,
+          tabBarInactiveTintColor: inactiveTintColor,
+          headerShown: false,
+          tabBarButton: HapticTab,
+          tabBarBackground: TabBarBackground,
+          tabBarStyle: [styles.tabBar, Platform.select({
+            ios: {
+              position: 'absolute',
+            },
+            default: {
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              overflow: 'hidden',
+            },
+          })],
+          tabBarItemStyle: styles.tabBarItem,
         }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="about"
-        options={{
-          title: 'About us',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="person.fill" color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Home',
+            tabBarIcon: ({ color, focused }) => (
+              <View style={focused ? styles.activeTabIconContainer : styles.tabIconContainer}>
+                <IconSymbol size={20} name="house.fill" color={color} />
+              </View>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="explore"
+          options={{
+            title: 'Explore',
+            tabBarIcon: ({ color, focused }) => (
+              <View style={focused ? styles.activeTabIconContainer : styles.tabIconContainer}>
+                <IconSymbol size={20} name="paperplane.fill" color={color} />
+              </View>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="about"
+          options={{
+            title: 'About us',
+            tabBarIcon: ({ color, focused }) => (
+              <View style={focused ? styles.activeTabIconContainer : styles.tabIconContainer}>
+                <IconSymbol size={20} name="person.fill" color={color} />
+              </View>
+            ),
+          }}
+        />
+
+        <Tabs.Screen
+          name="admin"
+          options={{
+            title: 'Admin',
+            tabBarIcon: ({ color, focused }) => (
+              <View style={focused ? styles.activeTabIconContainer : styles.tabIconContainer}>
+                <IconSymbol size={20} name="admin-panel-settings.fill" color={color} />
+              </View>
+            ),
+          }}
+        />
+      </Tabs>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    position: 'sticky',
+    top: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
+    paddingBottom: 10,
+    paddingTop: 35,
+    
+    zIndex: 100,
+    height: 'auto',
+  },
+  menuButton: {
+    padding: 8,
+  },
+  logoContainer: {
+  },
+  logo: {
+    height: 30,
+    width: 80,
+  },
+
+  tabBar: {
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.1)',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    // overflow: 'hidden',
+    // elevation: 10,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: -2 },
+    // shadowOpacity: 0.1,
+    // shadowRadius: 4,
+
+    height: 60,
+  },
+
+  tabBarItem: {
+    padding: 0,
+    margin: 0,
+  },
+
+  tabIconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 5,
+    borderTopWidth: 3,
+    borderTopColor: 'transparent', // Use your inactive tint color
+    width: '100%',
+  },
+  activeTabIconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 5,
+    borderTopWidth: 3,
+    width: '100%',
+    borderTopColor: Colors.light.tint, // Use your active tint color
+  },
+});

@@ -9,6 +9,17 @@ import { AuthProvider } from '../context/AuthContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useSession } from '@/hooks/useSession';
 
+const LightTheme = {
+  ...DefaultTheme, // Use the default light theme
+  dark: false, // Disable dark mode
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#FFFFFF', // Force light background
+    text: '#000000', // Dark text for visibility
+  },
+};
+
+
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutWrapper() {
@@ -37,7 +48,7 @@ function RootLayoutWrapper() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === 'dark' ? LightTheme : LightTheme}>
       <Stack screenOptions={{ headerShown: false }} />
       <StatusBar style="auto" />
     </ThemeProvider>

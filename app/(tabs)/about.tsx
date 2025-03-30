@@ -210,7 +210,6 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingInline: 20,
-    paddingTop: 50,
     minHeight: '100%',
   },
   featureRow: {
