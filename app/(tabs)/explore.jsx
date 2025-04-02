@@ -78,7 +78,7 @@ const generateTimeSlots = () => {
 const timeSlots = generateTimeSlots();
 const { width } = Dimensions.get('window');
 
-const BookAppointment = () => {
+const BookSlot = () => {
   const theme = useTheme();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -311,9 +311,9 @@ const BookAppointment = () => {
             
             <View style={styles.availableSlots}>
   {/* Twilight Header */}
-  <Text style={[styles.twilightHeader, { color: theme.colors.primary }]}>
+  {/* <Text style={[styles.twilightHeader, { color: theme.colors.primary }]}>
     Twilight
-  </Text>
+  </Text> */}
   
   {/* Time Period Tabs */}
   <View style={styles.timePeriodTabs}>
@@ -478,9 +478,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginLeft: 8,
   },
-  timeSlotList: {
-    paddingHorizontal: 8,
-  },
+  // timeSlotList: {
+  //   paddingHorizontal: 8,
+  //   paddingBlock:4,
+  //   height:"auto"
+  // },
   slot: {
     width: 100,
     height: 80,
@@ -536,12 +538,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
   },
-  twilightHeader: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
+  // twilightHeader: {
+  //   fontSize: 20,
+  //   fontWeight: 'bold',
+  //   marginBottom: 16,
+  //   textAlign: 'center',
+  // },
   timePeriodTabs: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -573,4 +575,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BookAppointment;
+export default BookSlot;
