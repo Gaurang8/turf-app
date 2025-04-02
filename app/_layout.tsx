@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 import { AuthProvider } from '../context/AuthContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useSession } from '@/hooks/useSession';
+import { Snackbar, Button } from "react-native-paper";
 
 const LightTheme = {
   ...DefaultTheme, // Use the default light theme

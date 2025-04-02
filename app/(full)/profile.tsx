@@ -8,10 +8,12 @@ import {
     TouchableOpacity,
     StyleSheet,
     Image,
+    Alert,
 } from 'react-native';
 import { Icon } from 'react-native-paper';
 
 export default function ProfileScreen({ navigation }: any) {
+    const {deactivateAccount } = useSession();
     const [firstName, setFirstName] = useState('Gaurang');
     const [phone, setPhone] = useState('9875139782');
     const [email, setEmail] = useState('gaurangkhambhaliya2003@gmail.com');
@@ -76,7 +78,30 @@ export default function ProfileScreen({ navigation }: any) {
                 <TouchableOpacity onPress={signOut} style={styles.logoutButton}>
                     <Text style={styles.logoutText}>Logout</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => alert('Account Deleted')}>
+                <TouchableOpacity onPress={() => {
+                    // take comfirmation from user via alert
+                    // if (confirm('Are you sure you want to delete your account?')) {
+                        // deactivateAccount();
+                    // }
+                    // comfirm is not a function in react native, so we can use alert
+                    Alert.alert(
+                        "Confirm Deletion",
+                        "Are you sure you want to delete your account?",
+                        [
+                            {
+                                text: "Cancel",
+                                style: "cancel"
+                            },
+                            {
+                                text: "OK",
+                                onPress: () => {
+                                    deactivateAccount();
+                                }
+                            }
+                        ]
+                    );
+
+                }}>
                     <Text style={styles.deleteText}>Delete account</Text>
                 </TouchableOpacity>
             </View>

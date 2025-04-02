@@ -49,11 +49,9 @@ export default function SignupScreen() {
     console.log('Login response:', res); // Log the response for debugging
 
     if (res) {
-      Alert.alert('Success', 'Logged in successfully!');
 
       router.push('/');  // Navigate to the home screen
     } else {
-      Alert.alert('Error', 'Invalid credentials.');
 
       // Optionally, you can reset the password field here
       setPassword('');
@@ -97,7 +95,9 @@ export default function SignupScreen() {
         </View>
 
         <TouchableOpacity style={styles.forgotPasswordContainer}>
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          <Text style={styles.forgotPasswordText}>
+            <Link href='/auth/forgot-password'>Forgot Password?</Link>
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.signupButton} onPress={handleSubmit}>

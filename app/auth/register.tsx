@@ -58,16 +58,13 @@ export default function SignupScreen({ navigation  } : any) {
       let res = await register(fullName, contact, password , confirmPassword);
 
       if (res) {
-        Alert.alert('Success', 'Registered successfully!');
         router.push('/');  // Navigate to the home screen
 
       } else {
-        Alert.alert('Error', 'Registration failed. Please try again.'); 
       }
 
     } catch (error) {
       console.error('Registration error:', error);
-      Alert.alert('Error', 'An error occurred. Please try again.');
     }
 
     
