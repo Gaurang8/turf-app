@@ -11,7 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import BlurTabBarBackground from '@/components/ui/TabBarBackground.ios';
 
 export const unstable_settings = {
-  initialRouteName: 'index',
+  initialRouteName: 'dashboard',
   // 👇 this disables automatic tab screen detection
   skipInitialRender: true,
 };
@@ -26,30 +26,32 @@ export default function TabLayout() {
 
 
 
-  
+
+
   const adminTabs = [
     {
-      name: 'admin/index',
+      name: 'dashboard',
       title: 'Dashboard',
       iconName: 'tablet-dashboard',
     },
     {
-      name: 'admin/booklist',
+      name: 'booklist',
       title: 'Booking List',
-      iconName: 'list.alt.fill',
+      iconName: 'list.fill',
     },
     {
-      name: 'admin/admin_list',
+      name: 'admin_list',
       title: 'Admin List',
-      iconName: 'person.crop.circle.fill',
+      iconName: 'list-alt',
     },
     {
-      name: 'admin/confirm',
+      name: 'confirm',
       title: 'Confirm',
       iconName: 'checkmark.seal.fill',
     },
   ];
 
+  
 
   return (
     <View style={styles.container}>
@@ -103,10 +105,11 @@ export default function TabLayout() {
           })],
           tabBarItemStyle: styles.tabBarItem,
         }}
+         initialRouteName={adminTabs[0].name} // Set initial route to first tab
       >
 
       {adminTabs.map(({ name, title, iconName }) => (
-          <Tabs.Screen
+         <Tabs.Screen
             key={name}
             name={name}
             options={{
@@ -117,10 +120,9 @@ export default function TabLayout() {
                 </View>
               ),
             }}
+      
           />
         ))}
-       
-  
       </Tabs>
     </View>
   );
@@ -160,12 +162,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.1)',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    // overflow: 'hidden',
-    // elevation: 10,
-    // shadowColor: '#000',
-    // shadowOffset: { width: 0, height: -2 },
-    // shadowOpacity: 0.1,
-    // shadowRadius: 4,
+    
 
     height: 60,
   },

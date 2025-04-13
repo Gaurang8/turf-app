@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { 
-  Text, 
-  Card,
-  Divider
-} from 'react-native-paper';
+import { View, StyleSheet, ScrollView, useWindowDimensions } from 'react-native';
+import { Text, Card, Divider } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { TabView, TabBar } from 'react-native-tab-view';
+import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
+import PagerView from 'react-native-pager-view';
+import { router } from 'expo-router';
 
 const CricketBookingsScreen = () => {
+  const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'all', title: 'All' },
     { key: 'failed', title: 'Failed/Cancelled' },
   ]);
 
-  // Static cricket booking data with amounts
   const bookingsData = {
     all: [
       {
@@ -25,7 +23,7 @@ const CricketBookingsScreen = () => {
         status: 'Completed',
         venue: 'City Cricket Ground',
         reason: 'Payment completed',
-        amount: '1500'
+        amount: '1500',
       },
       {
         id: '2',
@@ -34,7 +32,7 @@ const CricketBookingsScreen = () => {
         status: 'Failed',
         venue: 'Community Cricket Club',
         reason: 'Payment declined',
-        amount: '1200'
+        amount: '1200',
       },
       {
         id: '3',
@@ -43,8 +41,8 @@ const CricketBookingsScreen = () => {
         status: 'Pending',
         venue: 'National Cricket Academy',
         reason: 'Awaiting confirmation',
-        amount: '2000'
-      }
+        amount: '2000',
+      },
     ],
     failed: [
       {
@@ -54,7 +52,7 @@ const CricketBookingsScreen = () => {
         status: 'Failed',
         venue: 'Community Cricket Club',
         reason: 'Payment declined',
-        amount: '1200'
+        amount: '1200',
       },
       {
         id: '4',
@@ -63,33 +61,42 @@ const CricketBookingsScreen = () => {
         status: 'Cancelled',
         venue: 'Local Cricket Field',
         reason: 'Rain cancellation',
-        amount: '1000'
-      }
-    ]
+        amount: '1000',
+      },
+    ],
   };
 
-  const renderScene = ({ route }) => {
-    const data = route.key === 'all' ? bookingsData.all : bookingsData.failed;
-    
-    return (
+  const renderScene = SceneMap({
+    all: () => (
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {data.length > 0 ? (
-          data.map(booking => (
+        {bookingsData.all.map((booking) => (
+          <CricketBookingCard key={booking.id} booking={booking} />
+        ))}
+      </ScrollView>
+    ),
+    failed: () => (
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {bookingsData.failed.length > 0 ? (
+          bookingsData.failed.map((booking) => (
             <CricketBookingCard key={booking.id} booking={booking} />
           ))
         ) : (
           <EmptyState />
         )}
       </ScrollView>
-    );
-  };
+    ),
+  });
 
-  const renderTabBar = props => (
+  const renderTabBar = (props) => (
     <TabBar
       {...props}
       indicatorStyle={{ backgroundColor: 'black' }}
       style={{ backgroundColor: 'white' }}
-      labelStyle={{ color: 'black', fontWeight: 'bold', textTransform: 'capitalize' }}
+      labelStyle={{
+        color: 'black',
+        fontWeight: 'bold',
+        textTransform: 'capitalize',
+      }}
       activeColor="black"
       inactiveColor="#666"
     />
@@ -99,15 +106,16 @@ const CricketBookingsScreen = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Your Bookings</Text>
       <Divider style={styles.divider} />
-      
+
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
-        initialLayout={{ width: '100%' }}
+        initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
         lazy
-        swipeEnabled={false}
+        swipeEnabled
+        pager={(props) => <PagerView {...props} />}
       />
     </View>
   );
@@ -115,38 +123,67 @@ const CricketBookingsScreen = () => {
 
 const CricketBookingCard = ({ booking }) => {
   const getStatusColor = () => {
-    switch(booking.status) {
-      case 'Completed': return '#4CAF50';
-      case 'Failed': return '#F44336';
-      case 'Cancelled': return '#FF9800';
-      case 'Pending': return '#2196F3';
-      default: return '#9E9E9E';
+    switch (booking.status) {
+      case 'Completed':
+        return '#4CAF50';
+      case 'Failed':
+        return '#F44336';
+      case 'Cancelled':
+        return '#FF9800';
+      case 'Pending':
+        return '#2196F3';
+      default:
+        return '#9E9E9E';
     }
   };
 
   const getReasonColor = () => {
-    switch(booking.status) {
-      case 'Completed': return '#4CAF50';
-      case 'Pending': return '#FF9800';
-      case 'Failed': return '#F44336';
-      case 'Cancelled': return '#F44336';
-      default: return '#9E9E9E';
+    switch (booking.status) {
+      case 'Completed':
+        return '#4CAF50';
+      case 'Pending':
+        return '#FF9800';
+      case 'Failed':
+      case 'Cancelled':
+        return '#F44336';
+      default:
+        return '#9E9E9E';
     }
   };
 
   return (
-    <Card style={styles.card}>
+    <Card style={styles.card}
+      onPress={() => {
+        if (booking.status != 'Pending') {
+         return;
+        }
+        router.push(`/booking/${booking.id}`, { 
+          bookingDetails: booking,
+          bookingStatus: booking.status,
+          bookingReason: booking.reason,
+          bookingAmount: booking.amount,
+          bookingDate: booking.date,
+          bookingTime: booking.time,
+          bookingVenue: booking.venue,
+          bookingId: booking.id,
+          bookingStatusColor: getStatusColor(),
+          bookingReasonColor: getReasonColor(),
+        });
+      }}
+    >
       <Card.Content>
         <View style={styles.cardHeader}>
           <View style={styles.venueContainer}>
             <MaterialCommunityIcons name="calendar" size={16} color="#555" />
             <Text style={styles.venueText}>{booking.date}</Text>
           </View>
-          <View style={[styles.statusBadge, { backgroundColor: getStatusColor() }]}>
+          <View
+            style={[styles.statusBadge, { backgroundColor: getStatusColor() }]}
+          >
             <Text style={styles.statusText}>{booking.status}</Text>
           </View>
         </View>
-        
+
         <View style={styles.matchDetails}>
           <View style={styles.detailRow}>
             <MaterialCommunityIcons name="clock-outline" size={16} color="#555" />
@@ -157,12 +194,12 @@ const CricketBookingCard = ({ booking }) => {
             <Text style={styles.detailText}>{booking.amount}</Text>
           </View>
         </View>
-        
+
         <View style={styles.reasonContainer}>
-          <MaterialCommunityIcons 
-            name="information" 
-            size={16} 
-            color={getReasonColor()} 
+          <MaterialCommunityIcons
+            name="information"
+            size={16}
+            color={getReasonColor()}
           />
           <Text style={[styles.reasonText, { color: getReasonColor() }]}>
             {booking.reason}
@@ -186,19 +223,19 @@ const EmptyState = () => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   header: {
     fontSize: 20,
     fontWeight: 'bold',
     padding: 16,
     paddingBottom: 8,
-    color: 'black'
+    color: 'black',
   },
   divider: {
     marginHorizontal: 16,
     marginBottom: 8,
-    backgroundColor: '#eee'
+    backgroundColor: '#eee',
   },
   scrollContainer: {
     padding: 16,
@@ -209,7 +246,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
     elevation: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   cardHeader: {
     flexDirection: 'row',
@@ -218,40 +255,40 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#f5f5f5'
+    borderBottomColor: '#f5f5f5',
   },
   venueContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   venueText: {
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 8,
-    color: '#333'
+    color: '#333',
   },
   statusBadge: {
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 12
+    borderRadius: 12,
   },
   statusText: {
     color: 'white',
     fontSize: 12,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   matchDetails: {
-    marginTop: 4
+    marginTop: 4,
   },
   detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8
+    marginBottom: 8,
   },
   detailText: {
     marginLeft: 8,
     fontSize: 14,
-    color: '#555'
+    color: '#555',
   },
   reasonContainer: {
     flexDirection: 'row',
@@ -259,30 +296,30 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: '#f5f5f5'
+    borderTopColor: '#f5f5f5',
   },
   reasonText: {
     marginLeft: 8,
     fontSize: 14,
-    fontWeight: '500'
+    fontWeight: '500',
   },
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 40
+    padding: 40,
   },
   emptyText: {
     fontSize: 16,
     color: '#666',
     marginTop: 16,
     marginBottom: 4,
-    fontWeight: '500'
+    fontWeight: '500',
   },
   emptySubtext: {
     fontSize: 14,
     color: '#999',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
 
 export default CricketBookingsScreen;

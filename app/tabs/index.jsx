@@ -544,10 +544,10 @@ const styles = StyleSheet.create({
   // },
   slot: {
     width: 100,
-    height: 80,
-    borderRadius: 12,
+    // height: 80,
+    borderRadius: 8,
     marginRight: 12,
-    padding: 8,
+    padding: 12,
     justifyContent: 'center',
   },
   slotContent: {

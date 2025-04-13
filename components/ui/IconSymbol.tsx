@@ -4,6 +4,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { SymbolWeight } from 'expo-symbols';
 import React from 'react';
 import { OpaqueColorValue, StyleProp, ViewStyle } from 'react-native';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 // Add your SFSymbol to MaterialIcons mappings here.
 const MAPPING = {
@@ -17,7 +18,9 @@ const MAPPING = {
   'person.fill': 'person',
   'admin-panel-settings.fill': 'admin-panel-settings',
   'list.fill' : 'list',
-  'dashboard' :'dashboard'
+  'list-alt' : 'list-alt',
+  'dashboard' :'dashboard',
+  'tablet-dashboard': 'dashboard',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],

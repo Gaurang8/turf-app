@@ -1,3 +1,8 @@
+export const unstable_settings = {
+  initialRouteName: 'index',
+  skipInitialRender: true,
+};
+
 import { router, Tabs } from 'expo-router';
 import React, { useState } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Platform } from 'react-native';
@@ -9,12 +14,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { Drawer, Icon, useTheme } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import BlurTabBarBackground from '@/components/ui/TabBarBackground.ios';
+import confirmPage from '@/app/tabs/confirm'
 
-export const unstable_settings = {
-  initialRouteName: 'index',
-  // 👇 this disables automatic tab screen detection
-  skipInitialRender: true,
-};
 
 
 export default function TabLayout() {
@@ -34,8 +35,13 @@ export default function TabLayout() {
       iconName: 'house.fill',
     },
     {
-      name: 'appointments',
-      title: 'Appointments',
+      name: 'confirm',
+      title: 'confirm',
+      iconName: 'gearshape.fill',
+    },
+    {
+      name: 'booklist',
+      title: 'Bookings',
       iconName: 'list.fill',
     },
     {
@@ -68,28 +74,6 @@ export default function TabLayout() {
     
   ];
 
-  const adminTabs = [
-    {
-      name: 'admin/index',
-      title: 'Dashboard',
-      iconName: 'tablet-dashboard',
-    },
-    {
-      name: 'admin/booklist',
-      title: 'Booking List',
-      iconName: 'list.alt.fill',
-    },
-    {
-      name: 'admin/admin_list',
-      title: 'Admin List',
-      iconName: 'person.crop.circle.fill',
-    },
-    {
-      name: 'admin/confirm',
-      title: 'Confirm',
-      iconName: 'checkmark.seal.fill',
-    },
-  ];
 
   
 
@@ -145,12 +129,14 @@ export default function TabLayout() {
           })],
           tabBarItemStyle: styles.tabBarItem,
         }}
+         initialRouteName={userTabs[0].name} // Set initial route to first tab
       >
 
       {userTabs.map(({ name, title, iconName }) => (
           <Tabs.Screen
             key={name}
             name={name}
+           
             options={{
               title,
               tabBarIcon: ({ color, focused }) => (
@@ -159,20 +145,11 @@ export default function TabLayout() {
                 </View>
               ),
             }}
+      
           />
         ))}
+     
         {/* <Tabs.Screen
-          name="index"
-          options={{
-            title: 'Home',
-            tabBarIcon: ({ color, focused }) => (
-              <View style={focused ? styles.activeTabIconContainer : styles.tabIconContainer}>
-                <IconSymbol size={20} name="house.fill" color={color} />
-              </View>
-            ),
-          }}
-        />
-        <Tabs.Screen
           name="appointments"
           options={{
             title: 'Appointments',

@@ -1,3 +1,4 @@
+
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack, useRouter } from 'expo-router';
@@ -40,6 +41,9 @@ function RootLayoutWrapper() {
     if (isMounted) {
       if (!session) {
         router.replace("/auth/login"); // Navigate only after mounting
+      } else {
+        router.replace("/tabs"); // Navigate only after mounting
+        // router.replace("/admin/dashboard"); // Navigate only after mounting
       }
     }
   }, [isMounted, session, router]);
