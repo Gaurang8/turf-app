@@ -26,48 +26,7 @@ export default function TabLayout() {
 
 
 
-
-  const userTabs = [
-    {
-      name: 'index',
-      title: 'Home',
-      iconName: 'house.fill',
-    },
-    {
-      name: 'appointments',
-      title: 'Appointments',
-      iconName: 'list.fill',
-    },
-    {
-      name: 'about',
-      title: 'About us',
-      iconName: 'person.fill',
-    },
-
-    // admin
-    // {
-    //   name: 'dashboard',
-    //   title: 'Dashboard',
-    //   iconName: 'dashboard',
-    // },
-    // {
-    //   name: 'confirm',
-    //   title: 'Confirm',
-    //   iconName: 'person.fill',
-    // },
-    // {
-    //   name: 'booklist',
-    //   title: 'Booking List',
-    //   iconName: 'person.fill',
-    // },
-    // {
-    //   name: 'admin_list',
-    //   title: 'Admin List',
-    //   iconName: 'person.fill',
-    // },
-    
-  ];
-
+  
   const adminTabs = [
     {
       name: 'admin/index',
@@ -91,7 +50,6 @@ export default function TabLayout() {
     },
   ];
 
-  
 
   return (
     <View style={styles.container}>
@@ -147,7 +105,7 @@ export default function TabLayout() {
         }}
       >
 
-      {userTabs.map(({ name, title, iconName }) => (
+      {adminTabs.map(({ name, title, iconName }) => (
           <Tabs.Screen
             key={name}
             name={name}
@@ -161,51 +119,8 @@ export default function TabLayout() {
             }}
           />
         ))}
-        {/* <Tabs.Screen
-          name="index"
-          options={{
-            title: 'Home',
-            tabBarIcon: ({ color, focused }) => (
-              <View style={focused ? styles.activeTabIconContainer : styles.tabIconContainer}>
-                <IconSymbol size={20} name="house.fill" color={color} />
-              </View>
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="appointments"
-          options={{
-            title: 'Appointments',
-            tabBarIcon: ({ color, focused }) => (
-              <View style={focused ? styles.activeTabIconContainer : styles.tabIconContainer}>
-                <IconSymbol size={20} name="list.fill" color={color} />
-              </View>
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="about"
-          options={{
-            title: 'About us',
-            tabBarIcon: ({ color, focused }) => (
-              <View style={focused ? styles.activeTabIconContainer : styles.tabIconContainer}>
-                <IconSymbol size={20} name="person.fill" color={color} />
-              </View>
-            ),
-          }}
-        />
-
-        <Tabs.Screen
-          name="admin"
-          options={{
-            title: 'Admin',
-            tabBarIcon: ({ color, focused }) => (
-              <View style={focused ? styles.activeTabIconContainer : styles.tabIconContainer}>
-                <IconSymbol size={20} name="admin-panel-settings.fill" color={color} />
-              </View>
-            ),
-          }}
-        /> */}
+       
+  
       </Tabs>
     </View>
   );

@@ -161,10 +161,11 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     borderColor: '#ccc',
-    paddingHorizontal: 10,
+    padding: 10,
     borderRadius: 5,
     marginBottom: 10,
     backgroundColor: '#fff',
+
   },
   passwordInput: {
     flex: 1,

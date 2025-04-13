@@ -438,8 +438,10 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   card: {
-    borderRadius: 12,
+    borderRadius: 16,
     margin: 8,
+    boxShadow: "rgba(0, 0, 0, 0.3) 0px 1px 3px",
+    backgroundColor: "rgb(247, 243, 249)"
   },
   header: {
     fontSize: 22,
